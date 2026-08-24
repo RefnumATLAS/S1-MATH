@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suivi S1 Intégral - Cahier de Matières Vues</title>
+    <style>
+        :root {
+            --primary: #2b6cb0;
+            --primary-light: #ebf8ff;
+            --bg: #f7fafc;
+            --text: #2d3748;
+            --border: #e2e8f0;
+            --success: #48bb78;
+        }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 { margin: 0; color: var(--primary); font-size: 1.8rem; }
+        
+        /* Informations de classe, année et prof */
+        .meta-info-block {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            margin-bottom: 25px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+        }
+        .meta-input-group {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .meta-input-group label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #4a5568;
+            text-transform: uppercase;
+        }
+        .meta-input-group input {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 1rem;
+            color: var(--text);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .meta-input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .progress-container {
+            background: #edf2f7;
+            border-radius: 20px;
+            width: 300px;
+            height: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar {
+            background: var(--success);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #4a5568;
+            top: 1px;
+        }
+        .champ-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary);
+            overflow: hidden;
+        }
+        .champ-header {
+            background: var(--primary-light);
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border);
+            color: #1a365d;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        th {
+            background: #f8fafc;
+            font-size: 0.85rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .module-row {
+            background: #edf2f7;
+            font-weight: bold;
+            color: #2d3748;
+            font-size: 1rem;
+        }
+        .center { text-align: center; }
+        input[type="checkbox"] {
+            transform: scale(1.3);
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-block;
+            white-space: nowrap;
+        }
+        .badge-s { background: #fee2e2; color: #991b1b; }
+        .badge-sf { background: #fef3c7; color: #92400e; }
+        .badge-c { background: #dcfce7; color: #166534; }
+        .actions-btn {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { opacity: 0.9; }
+
+        /* Optimisation IMPRESSION & EXPORT PDF */
+        @media print {
+            body {
+                background: white;
+                color: black;
+                padding: 0;
+            }
+            .actions-btn, button {
+                display: none !important;
+            }
+            header {
+                box-shadow: none;
+                padding: 10px 0;
+                border-bottom: 2px solid #000;
+                margin-bottom: 20px;
+            }
+            .meta-info-block {
+                box-shadow: none;
+                border: 1px solid #cbd5e1;
+                margin-bottom: 20px;
+                padding: 10px;
+            }
+            .meta-input-group input {
+                border: none !important;
+                padding: 4px 0 !important;
+                font-weight: bold;
+                background: transparent !important;
+            }
+            .champ-card {
+                box-shadow: none;
+                border: 1px solid #cbd5e1;
+                border-left: 5px solid #2b6cb0 !important;
+                margin-bottom: 20px;
+                page-break-inside: avoid;
+            }
+            th {
+                background: #f1f5f9 !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .module-row {
+                background: #e2e8f0 !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .badge {
+                border: 1px solid #cbd5e1;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .progress-container, .progress-bar {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1>Cahier de Matières Vues - S1</h1>
+            <p style="margin: 5px 0 0 0; color: #718096;">Répertoire exhaustif des apprentissages par Champ et Module</p>
+        </div>
+        <div>
+            <div class="progress-container">
+                <div class="progress-bar" id="globalProgress"></div>
+                <div class="progress-text" id="progressText">0% validé</div>
+            </div>
+            <div class="actions-btn" style="margin-top: 10px; justify-content: flex-end;">
+                <button onclick="window.print()" style="background: #4a5568;">📄 Exporter en PDF / Imprimer</button>
+                <button onclick="resetData()" style="background: #e53e3e;">Réinitialiser</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="meta-info-block">
+        <div class="meta-input-group">
+            <label for="meta_classe">Classe / Groupe</label>
+            <input type="text" id="meta_classe" placeholder="Ex: S1A, Groupe 2..." oninput="saveMetaValue('meta_classe')">
+        </div>
+        <div class="meta-input-group">
+            <label for="meta_annee">Année Scolaire</label>
+            <input type="text" id="meta_annee" placeholder="Ex: 2025 - 2026" oninput="saveMetaValue('meta_annee')">
+        </div>
+        <div class="meta-input-group">
+            <label for="meta_prof">Professeur</label>
+            <input type="text" id="meta_prof" placeholder="Nom de l'enseignant" oninput="saveMetaValue('meta_prof')">
+        </div>
+    </div>
+
+    <div id="app"></div>
+</div>
+
+<script>
+// Base de données structurée sans aucune omission
+const curriculumData = [
+    {
+        champ: "Champ 1 - Des objets de l’espace à la géométrie",
+        modules: [
+            {
+                name: "Module : Les éléments du plan",
+                items: [
+                    { type: "S", desc: "Associer un symbole à l’objet qu’il désigne : point, segment, demi-droite, droite, angle, droites parallèles, droites perpendiculaires." },
+                    { type: "S", desc: "Identifier la médiatrice d’un segment." },
+                    { type: "S", desc: "Définir la médiatrice d’un segment." },
+                    { type: "SF", desc: "Lire, interpréter et utiliser les notations, les symboles et le codage géométriques." },
+                    { type: "SF", desc: "Représenter une situation géométrique décrite à l’aide des notations, des symboles et du codage géométriques." },
+                    { type: "SF", desc: "Construire la médiatrice d’un segment." }
+                ]
+            },
+            {
+                name: "Module : La géométrie plane – Section : Les angles",
+                items: [
+                    { type: "S", desc: "Associer aux angles particuliers (droit, aigu, obtus, plat, plein) leurs amplitudes." },
+                    { type: "S", desc: "Identifier la bissectrice d’un angle." },
+                    { type: "S", desc: "Définir la bissectrice d’un angle." },
+                    { type: "S", desc: "Identifier des angles complémentaires, supplémentaires, opposés par le sommet." },
+                    { type: "SF", desc: "Mesurer l’amplitude d’un angle à l’aide du rapporteur." },
+                    { type: "SF", desc: "Construire un angle dont l’amplitude est donnée." },
+                    { type: "SF", desc: "Construire la bissectrice d’un angle." },
+                    { type: "SF", desc: "Déterminer l’amplitude d’un angle en utilisant les propriétés des angles complémentaires, supplémentaires and opposés par le sommet." },
+                    { type: "SF", desc: "Justifier l’amplitude d’un angle en utilisant des propriétés." },
+                    { type: "C", desc: "Résoudre un problème mobilisant des propriétés relatives aux angles et justifier." }
+                ]
+            },
+            {
+                name: "Section : Le repérage",
+                items: [
+                    { type: "S", desc: "Énoncer les éléments d’un repère orthonormé en utilisant le vocabulaire adéquat (axes perpendiculaires, unités, origine)." },
+                    { type: "S", desc: "Identifier l’abscisse, l’ordonnée, les coordonnées à partir d’un point placé dans un repère ou d’un couple de nombres." },
+                    { type: "S", desc: "Écrire, avec le symbolisme adéquat, les coordonnées d’un point." },
+                    { type: "SF", desc: "Déterminer les coordonnées d’un point placé dans un repère orthonormé." },
+                    { type: "SF", desc: "Placer, dans un repère orthonormé, un point dont les coordonnées sont données." },
+                    { type: "C", desc: "Placer un ensemble de points qui vérifient une condition exprimant, en langage courant, une relation entre abscisse et ordonnée. Ex. : l’ordonnée est le double de l’abscisse." }
+                ]
+            },
+            {
+                name: "Module : La géométrie plane – Section : Les figures planes (triangles, quadrilatères et polygones réguliers)",
+                items: [
+                    { type: "S", desc: "Identifier des figures simples (triangle, quadrilatère) sur base de caractéristiques : les côtés (nombre, longueur, parallélisme, perpendicularité) ; les angles (amplitude)." },
+                    { type: "S", desc: "Identifier les droites remarquables d’un triangle." },
+                    { type: "S", desc: "Définir les droites remarquables d’un triangle." },
+                    { type: "S", desc: "Énoncer les propriétés des droites remarquables dans le triangle." },
+                    { type: "S", desc: "Identifier des polygones réguliers sur base des caractéristiques : les côtés (nombre, longueur) ; les angles (amplitude)." },
+                    { type: "S", desc: "Énoncer la propriété de la somme des amplitudes des angles intérieurs d’un triangle et d’un quadrilatère." },
+                    { type: "S", desc: "Énoncer les propriétés relatives aux angles, aux droites remarquables, dans des figures simples." },
+                    { type: "SF", desc: "Construire un triangle connaissant : la longueur d’un côté et l’amplitude de ses deux angles adjacents ; la longueur de deux côtés et l’amplitude de l’angle compris entre eux ; la longueur des trois côtés." },
+                    { type: "SF", desc: "Construire un triangle isocèle ou équilatéral : à la latte et au compas ; à la latte et au rapporteur." },
+                    { type: "SF", desc: "Construire un losange connaissant la longueur du côté et l’amplitude d’un angle." },
+                    { type: "SF", desc: "Construire un parallélogramme connaissant la longueur de deux côtés et l’amplitude de l’angle compris entre eux." },
+                    { type: "SF", desc: "Construire les droites remarquables d’un triangle ou d’un quadrilatère." },
+                    { type: "SF", desc: "Déterminer l’amplitude d’un angle en utilisant la propriété relative à la somme des amplitudes des angles intérieurs d’un triangle et d’un quadrilatère." },
+                    { type: "SF", desc: "Terminer la construction d’une figure simple respectant des contraintes sur les droites remarquables." },
+                    { type: "SF", desc: "Construire le cercle inscrit et le cercle circonscrit à un triangle." },
+                    { type: "SF", desc: "Justifier l’amplitude d’un angle en utilisant des propriétés." },
+                    { type: "C", desc: "Construire une figure complexe (figure composée de figures simples), les étapes de construction étant données." },
+                    { type: "C", desc: "Rédiger des étapes de construction d’une figure complexe (figure composée de figures simples) donnée." },
+                    { type: "C", desc: "Construire un triangle dont deux médiatrices et un sommet sont donnés." },
+                    { type: "C", desc: "Construire un triangle dont deux bissectrices, un sommet (appartenant à l’une d’elles) et l’amplitude de l’angle en ce sommet sont donnés." },
+                    { type: "C", desc: "Construire un triangle isocèle dont une médiatrice (ou une bissectrice) et un sommet ou l’amplitude d’un angle ou la longueur d’un côté sont donnés." },
+                    { type: "C", desc: "Construire un triangle équilatéral dont une médiatrice (ou une bissectrice) et un sommet ou la longueur d’un côté sont donnés." },
+                    { type: "C", desc: "Construire un quadrilatère (carré, rectangle, losange, parallélogramme) dont une diagonale ou une médiane est donnée." },
+                    { type: "C", desc: "Résoudre un problème mobilisant des propriétés relatives aux angles et justifier." }
+                ]
+            },
+            {
+                name: "Module : Les mouvements dans le plan – Section : Les isométries",
+                items: [
+                    { type: "S", desc: "Associer les actions en lien avec les mouvements (glisser, pivoter, retourner) aux isométries." },
+                    { type: "S", desc: "Identifier une symétrie orthogonale, une symétrie centrale, une translation, une rotation." },
+                    { type: "S", desc: "Identifier les éléments caractéristiques d’une symétrie orthogonale, d’une symétrie centrale, d’une translation, d’une rotation." },
+                    { type: "S", desc: "Identifier les invariants des isométries." },
+                    { type: "SF", desc: "Construire l’image d’un triangle et d’un quadrilatère par une symétrie orthogonale, une symétrie centrale, une translation et par une rotation de + 90° et - 90°." },
+                    { type: "SF", desc: "Construire les éléments caractéristiques d’une isométrie lorsque la figure et son image sont données." },
+                    { type: "C", desc: "Résoudre un problème mobilisant des propriétés relatives aux isométries et justifier." },
+                    { type: "C", desc: "Justifier que deux figures sont isométriques en identifiant l’isométrie en jeu." },
+                    { type: "C", desc: "Justifier que deux figures ne sont pas images l’une de l’autre par une isométrie, en utilisant un argument adéquat, basé sur les isométries et leurs invariants." }
+                ]
+            },
+            {
+                name: "Module : Les mouvements dans le plan – Section : Axe(s) et centre de symétrie",
+                items: [
+                    { type: "S", desc: "Identifier les quadrilatères admettant un ou des axes de symétrie." },
+                    { type: "S", desc: "Identifier les quadrilatères admettant un centre de symétrie." },
+                    { type: "S", desc: "Énoncer les propriétés relatives aux axes et centre de symétrie dans des figures simples." },
+                    { type: "SF", desc: "Construire les axes et centre de symétrie d’une figure simple." },
+                    { type: "SF", desc: "Terminer la construction d’une figure simple respectant des contraintes sur les droites remarquables." },
+                    { type: "C", desc: "Construire une figure simple dont le centre de symétrie, le(les) axe(s) de symétrie sont donnés." }
+                ]
+            }
+        ]
+    },
+    {
+        champ: "Champ 2 - Des grandeurs à la relation de variables",
+        modules: [
+            {
+                name: "Module : Périmètre et aires de figures planes",
+                items: [
+                    { type: "S", desc: "Exprimer le périmètre d’un triangle équilatéral, d’un rectangle, d’un carré, d’un cercle en fonction de ses dimensions." },
+                    { type: "S", desc: "Énoncer la formule du calcul de l’aire du disque." },
+                    { type: "S", desc: "Exprimer l’aire d’une figure simple (rectangle, parallélogramme, trapèze, triangle, losange, carré) après avoir repéré les dimensions utiles." },
+                    { type: "S", desc: "Justifier les liens entre les formules d’aire du rectangle, du parallélogramme, du trapèze, du triangle et du losange." },
+                    { type: "SF", desc: "Calculer la longueur d’un côté d’un polygone régulier (triangle équilatéral, carré, pentagone, hexagone, octogone, décagone) dont le périmètre est donné." },
+                    { type: "SF", desc: "Calculer le périmètre d’un cercle." },
+                    { type: "SF", desc: "Calculer l’aire d’une figure simple (triangle, quadrilatère, disque)." },
+                    { type: "SF", desc: "Décomposer une surface complexe en plusieurs surfaces connues (triangles, quadrilatères, disques) pour en calculer l’aire, avec des formules préalablement construites." },
+                    { type: "C", desc: "Résoudre des problèmes faisant intervenir des calculs d’aire et de périmètre de figures simples ou complexes, en situations contextualisées." },
+                    { type: "C", desc: "Représenter une figure simple dont l’aire is identique à celle d’une autre figure simple donnée. Ex. : Représenter un rectangle dont l’aire est identique à celle d’un triangle donné." }
+                ]
+            },
+            {
+                name: "Section : La fraction « grandeur »",
+                items: [
+                    { type: "SF", desc: "Additionner deux fractions d’une même grandeur." },
+                    { type: "SF", desc: "Calculer un pourcentage, en situations contextualisées." },
+                    { type: "C", desc: "Comparer des offres faisant intervenir des pourcentages, dans une même situation contextualisée, afin d’en déterminer la plus avantageuse." },
+                    { type: "C", desc: "Exploiter une ou plusieurs situations faisant intervenir des pourcentages successifs. Ex. : 10 % de 30 % de…, - 10 % puis + 20 %..., - 40 % puis - 10 %...." }
+                ]
+            },
+            {
+                name: "Module : Les grandeurs proportionnelles",
+                items: [
+                    { type: "S", desc: "Exprimer que deux grandeurs directement proportionnelles sont « deux grandeurs multiples l’une de l’autre »." },
+                    { type: "S", desc: "Reconnaitre des grandeurs directement proportionnelles, parmi un ensemble de situations libellées en français, de tableaux de nombres ou de représentations graphiques." },
+                    { type: "S", desc: "Justifier que deux grandeurs sont ou ne sont pas directement proportionnelles, à partir d’une situation libellée en français, d’un tableau de nombres ou d’une représentation graphique." },
+                    { type: "SF", desc: "Associer des représentations différentes (tableau, graphique) d’une même situation de proportionnalité." },
+                    { type: "SF", desc: "Construire un tableau de nombres à partir d’un graphique représentant une relation entre deux grandeurs directement proportionnelles." },
+                    { type: "SF", desc: "Construire un graphique à partir d’un tableau de nombres représentant une relation entre deux grandeurs directement proportionnelles." },
+                    { type: "SF", desc: "Établir les liens multiplicatifs entre deux grandeurs directement proportionnelles dans un tableau." },
+                    { type: "SF", desc: "Compléter un tableau de proportionnalité directe entre deux grandeurs." },
+                    { type: "C", desc: "Construire un tableau de nombres ou un graphique, à partir d’une situation de proportionnalité directe contextualisée." },
+                    { type: "C", desc: "Résoudre un problème de proportionnalité directe." }
+                ]
+            }
+        ]
+    },
+    {
+        champ: "Champ 3 - De l’arithmétique à l’algèbre",
+        modules: [
+            {
+                name: "Module : Le monde des nombres – SECTION : Les nombres naturels",
+                items: [
+                    { type: "S", desc: "Identifier un nombre naturel." },
+                    { type: "S", desc: "Placer sur la droite graduée des nombres entiers positifs (naturels)." },
+                    { type: "S", desc: "Associer les symboles d’ordre (<, >, =) aux expressions « est plus petit que », « est plus grand que », « est égal à » et à leurs positions respectives sur une droite orientée graduée." },
+                    { type: "S", desc: "Dans un contexte numérique, associer une opération à ses composantes et son résultat : addition, termes, somme ; soustraction, premier terme, deuxième terme, différence, multiplication, facteurs, produit ; division, dividende, diviseur, quotient, reste." },
+                    { type: "S", desc: "Énoncer en langage courant et illustrer numériquement les propriétés des opérations (commutativité, associativité, neutre, absorbant)." },
+                    { type: "S", desc: "Justifier des techniques de calcul mental (multiplication par 5, par 9, par 11…), à l’aide de la décomposition et de la distributivité." },
+                    { type: "S", desc: "Justifier les étapes d’un calcul numérique au moyen des propriétés des opérations (commutativité, associativité, neutre, absorbant)." },
+                    { type: "SF", desc: "Calculer (nombres entiers) en utilisant les propriétés des opérations (commutativité, associativité, neutre, absorbant) et la distributivité." },
+                    { type: "SF", desc: "Calculer (nombres entiers) en utilisant les priorités des opérations." },
+                    { type: "SF", desc: "Utiliser la calculatrice pour effectuer un calcul comportant plusieurs opérations." },
+                    { type: "SF", desc: "Estimer l’ordre de grandeur d’un résultat." },
+                    { type: "SF", desc: "Vérifier la plausibilité d’un résultat (cohérence avec l’estimation ou cohérence avec la situation)." },
+                    { type: "C", desc: "Résoudre un problème à l’aide des opérations et de leurs propriétés." }
+                ]
+            },
+            {
+                name: "Module : Le monde des nombres – SECTION : Les puissances",
+                items: [
+                    { type: "S", desc: "Associer 10 à 10^1, 100 à 10², 1 000 à 10³ et au préfixe kilo, 1 000 000 à 10^6 et au préfixe méga, 10^9 au préfixe giga." },
+                    { type: "S", desc: "Dans un contexte numérique, associer une opération à ses composantes et son résultat : puissance, base et exposant." },
+                    { type: "S", desc: "Définir une puissance à exposant naturel, la base étant positive." },
+                    { type: "S", desc: "Énoncer les carrés des quinze premiers nombres naturels." },
+                    { type: "SF", desc: "Calculer une puissance dont la base et l’exposant sont des nombres naturels." },
+                    { type: "SF", desc: "Calculer (nombres entiers) en utilisant les priorités des opérations." },
+                    { type: "SF", desc: "Utiliser la calculatrice pour effectuer un calcul comportant plusieurs opérations." },
+                    { type: "SF", desc: "Estimer l’ordre de grandeur d’un résultat." },
+                    { type: "SF", desc: "Vérifier la plausibilité d’un résultat (cohérence avec l’estimation ou cohérence avec la situation)." },
+                    { type: "C", desc: "Résoudre un problème à l’aide des opérations et de leurs propriétés." }
+                ]
+            },
+            {
+                name: "Module : Le monde des nombres – SECTION : Les nombres entiers",
+                items: [
+                    { type: "S", desc: "Placer sur la droite graduée des nombres entiers positifs (naturels) et leurs opposés." },
+                    { type: "S", desc: "Associer l’expression « opposé d’un nombre » à son écriture mathématique et à sa représentation sur une droite graduée." },
+                    { type: "S", desc: "Associer les symboles d’ordre (<, >, =) aux expressions « est plus petit que », « est plus grand que », « est égal à » et à leurs positions respectives sur une droite orientée graduée." },
+                    { type: "S", desc: "Énoncer en langage courant et illustrer numériquement les propriétés des opérations (commutativité, associativité, neutre, absorbant)." },
+                    { type: "S", desc: "Associer à l’addition et à la soustraction de deux nombres entiers (positifs ou négatifs) un déplacement ou écart sur la droite numérique." },
+                    { type: "S", desc: "Énoncer les règles permettant de multiplier, de diviser deux nombres entiers." },
+                    { type: "S", desc: "Justifier les étapes d’un calcul numérique au moyen des propriétés des opérations (commutativité, associativité, neutre, absorbant)." },
+                    { type: "SF", desc: "Comparer deux nombres (entiers) en utilisant le symbole adéquat (<, >, =)." },
+                    { type: "SF", desc: "Encadrer un nombre entier à l’unité près." },
+                    { type: "SF", desc: "Ordonner des nombres entiers, par ordre croissant ou décroissant." },
+                    { type: "SF", desc: "Placer un nombre (naturel, entier) sur une droite graduée." },
+                    { type: "SF", desc: "Calculer une somme, une différence, un produit et un quotient de nombres entiers." },
+                    { type: "SF", desc: "Calculer (nombres entiers) en utilisant les propriétés des opérations (commutativité, associativité, neutre, absorbant) et la distributivité." },
+                    { type: "SF", desc: "Calculer (nombres entiers) en utilisant les priorités des opérations." },
+                    { type: "SF", desc: "Estimer l’ordre de grandeur d’un résultat." },
+                    { type: "SF", desc: "Utiliser la calculatrice pour effectuer un calcul comportant plusieurs opérations." },
+                    { type: "SF", desc: "Vérifier la plausibilité d’un résultat (cohérence avec l’estimation ou cohérence avec la situation)." },
+                    { type: "SF", desc: "Utiliser la calculatrice pour vérifier le résultat d’une opération (nombres entiers)." },
+                    { type: "C", desc: "Résoudre un problème à l’aide des opérations et de leurs propriétés." }
+                ]
+            },
+            {
+                name: "Module : Le monde des nombres – SECTION : Les nombres décimaux et les fractions",
+                items: [
+                    { type: "S", desc: "Placer sur la droite graduée des nombres décimaux positifs et leurs opposés." },
+                    { type: "S", desc: "Identifier un nombre naturel, un nombre entier, un nombre rationnel positif ou négatif (écrit sous la forme fractionnaire, décimale)." },
+                    { type: "S", desc: "Associer la fraction nombre à un quotient (69 : 4 = 69/4)." },
+                    { type: "S", desc: "Associer différentes écritures d’un même nombre : décimale, fractionnaire, pourcentage." },
+                    { type: "S", desc: "Associer l’expression « inverse d’un nombre » à son écriture mathématique. Ex. : l’inverse de 2 est 1/2." },
+                    { type: "S", desc: "Associer les symboles d’ordre (<, >, =) aux expressions « est plus petit que », « est plus grand que », « est égal à » et à leurs positions respectives sur une droite orientée graduée." },
+                    { type: "S", desc: "Expliquer les notions de valeur exacte, de valeurs approchées (par excès et par défaut) et d’arrondi." },
+                    { type: "S", desc: "Interpréter l’écriture décimale fournie par un outil numérique." },
+                    { type: "S", desc: "Associer à l’addition et à la soustraction de deux nombres décimaux (positifs ou négatifs) un déplacement ou écart sur la droite numérique." },
+                    { type: "SF", desc: "Écrire une fraction équivalente à une autre." },
+                    { type: "SF", desc: "Simplifier une fraction." },
+                    { type: "SF", desc: "Rendre une fraction irréductible." },
+                    { type: "SF", desc: "Transformer l’écriture d’un nombre en une écriture équivalente (écriture fractionnaire et écriture décimale)." },
+                    { type: "SF", desc: "Comparer deux nombres (rationnels) en utilisant le symbole adéquat (<, >, =)." },
+                    { type: "SF", desc: "Encadrer un nombre rationnel à l’unité, au dixième ou au centième près." },
+                    { type: "SF", desc: "Ordonner des nombres rationnels sous forme décimale et/ou fractionnaire, par ordre croissant ou décroissant." },
+                    { type: "SF", desc: "Placer un nombre (rationnel positif ou négatif) sur une droite graduée." },
+                    { type: "SF", desc: "Déterminer la valeur approchée d’un nombre rationnel par défaut ou par excès, le degré de précision étant donné." },
+                    { type: "SF", desc: "Calculer (nombres décimaux) en utilisant les propriétés des opérations (commutativité, associativité, neutre, absorbant) et la distributivité." },
+                    { type: "SF", desc: "Calculer (nombres décimaux) en utilisant les priorités des opérations." },
+                    { type: "SF", desc: "Utiliser la calculatrice pour effectuer un calcul comportant plusieurs opérations." },
+                    { type: "SF", desc: "Estimer l’ordre de grandeur d’un résultat." },
+                    { type: "SF", desc: "Vérifier la plausibilité d’un résultat (cohérence avec l’estimation ou cohérence avec la situation)." },
+                    { type: "SF", desc: "Utiliser la calculatrice pour vérifier le résultat d’une opération (nombres décimaux)." },
+                    { type: "C", desc: "Résoudre un problème à l’aide des opérations et de leurs propriétés." }
+                ]
+            },
+            {
+                name: "Module : Outils algébriques – SECTION : Expressions algébriques",
+                items: [
+                    { type: "S", desc: "Utiliser, dans leur contexte, les termes usuels propres aux expressions algébriques (coefficient, inconnue d’une équation, terme indépendant, « terme en x », termes semblables…)." },
+                    { type: "S", desc: "Expliciter et utiliser les conventions usuelles d’écriture algébrique (3x = 3.x = x.3, a = a/1, a = 1a = 1.a)." },
+                    { type: "S", desc: "Dans un contexte algébrique : reconnaître une somme, une différence, un produit d’expressions algébriques ; associer une expression algébrique comportant une somme à la longueur d’un segment, un produit à l’aire d’une surface ; associer le carré d’une expression algébrique à l’aire d’un carré, le cube d’une expression algébrique au volume d’un cube." },
+                    { type: "SF", desc: "À partir d’une suite numérique ou illustrée (motifs constitués d’éléments) : compléter la suite par quelques valeurs proches ; décrire la régularité ; déterminer le rang qui correspond à un motif ou une valeur donnée ; exprimer avec ses mots la relation entre le rang et le nombre d’éléments ; déterminer une valeur de la suite pour un rang élevé ; exprimer la relation à l’aide des opérations mathématiques et du symbole « égal »." },
+                    { type: "SF", desc: "Associer une expression énoncée en langage courant à une expression algébrique (nombre pair, nombre impair, carré de…, multiple de… augmenté/diminué de…)." },
+                    { type: "SF", desc: "Élaborer une expression algébrique du périmètre et de l’aire d’une figure. Ex. : périmètre d’un carré dont le côté mesure 3a+1." },
+                    { type: "SF", desc: "Transformer une expression algébrique à l’aide des outils : réduction de termes semblables ; produit de facteurs (monômes de degré 1)." },
+                    { type: "SF", desc: "Calculer la valeur numérique d’une expression algébrique." },
+                    { type: "C", desc: "Traduire une situation contextualisée par un schéma ou par une expression algébrique ou par une équation." },
+                    { type: "C", desc: "Rédiger un énoncé traduisant une expression algébrique, une équation ou un schéma." }
+                ]
+            },
+            {
+                name: "Module : Outils algébriques – SECTION : Equations du premier degré à une inconnue",
+                items: [
+                    { type: "S", desc: "Utiliser, dans leur contexte, les termes usuels propres aux expressions algébriques (coefficient, inconnue d’une équation, terme indépendant, « terme en x », termes semblables…)." },
+                    { type: "S", desc: "Expliciter les principes d’équivalence d’une égalité." },
+                    { type: "S", desc: "Justifier les étapes d’une résolution d’équation (ax=b, ax+b=c) à l’aide des principes d’équivalence." },
+                    { type: "SF", desc: "Résoudre une équation du premier degré à une inconnue du type : ax=b, ax+b=c (à l’aide de graphes fléchés, des principes d’équivalence…), « a, b, c » étant des nombres entiers." },
+                    { type: "SF", desc: "Vérifier la solution d’une équation du premier degré à une inconnue (ax=b, ax+b=c)." },
+                    { type: "SF", desc: "Écrire une équation du premier degré dont la solution est donnée." },
+                    { type: "SF", desc: "Estimer l’ordre de grandeur d’un résultat." },
+                    { type: "SF", desc: "Vérifier la plausibilité d’un résultat (cohérence avec l’estimation ou cohérence avec la situation)." },
+                    { type: "C", desc: "Traduire une situation contextualisée par un schéma ou par une expression algébrique ou par une équation." },
+                    { type: "C", desc: "Choisir, parmi un ensemble de situations contextualisées, celle qui correspond à l’équation donnée." },
+                    { type: "C", desc: "Rédiger un énoncé traduisant une expression algébrique, une équation ou un schéma." }
+                ]
+            }
+        ]
+    },
+    {
+        champ: "Champ 4 - De l’organisation des données à la statistique",
+        modules: [
+            {
+                name: "Module : De l’organisation des données à la statistique",
+                items: [
+                    { type: "S", desc: "Identifier la population, la variable, les modalités, les effectifs, les fréquences, l’étendue." },
+                    { type: "S", desc: "Caractériser la variable étudiée (qualitative ou quantitative)." },
+                    { type: "S", desc: "Identifier le diagramme donné : diagramme en bâtonnets (variables quantitatives discrètes) ou diagramme à bandes (variables qualitatives) ou diagramme circulaire." },
+                    { type: "S", desc: "Décrire le concept de moyenne arithmétique (variable discrète)." },
+                    { type: "SF", desc: "À partir d’une situation libellée en français, d’un tableau de distribution ou d’un diagramme statistique : décrire la population et la variable ; caractériser la variable ; déterminer l’effectif total, l’effectif associé à une modalité, la fréquence associée." },
+                    { type: "SF", desc: "Calculer la moyenne arithmétique d’une variable quantitative discrète." },
+                    { type: "SF", desc: "Relier entre elles différentes présentations d’une même situation (liste de données, tableau de distribution, diagrammes)." },
+                    { type: "SF", desc: "Présenter une liste de données à l’aide d’un diagramme en bâtonnets et à bandes." },
+                    { type: "C", desc: "Interpréter une valeur obtenue en lien avec le caractère étudié et le contexte." },
+                    { type: "C", desc: "Lire des informations présentées à partir de supports différents pour répondre à des questions." },
+                    { type: "C", desc: "Choisir, à partir d’un ensemble d’informations, l’élément pertinent permettant de répondre à une question posée." }
+                ]
+            }
+        ]
+    }
+];
+
+function renderApp() {
+    const app = document.getElementById('app');
+    app.innerHTML = '';
+
+    curriculumData.forEach((champ, cIdx) => {
+        const champCard = document.createElement('div');
+        champCard.className = 'champ-card';
+        
+        let html = `<div class="champ-header">${champ.champ}</div>`;
+        html += `<table>
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">Type</th>
+                            <th>Objectif d'apprentissage</th>
+                            <th class="center" style="width: 60px;">P1</th>
+                            <th class="center" style="width: 60px;">P2</th>
+                            <th class="center" style="width: 60px;">P3</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+        champ.modules.forEach((mod, mIdx) => {
+            html += `<tr class="module-row"><td colspan="5">${mod.name}</td></tr>`;
+            
+            mod.items.forEach((item, iIdx) => {
+                const idBase = `${cIdx}_${mIdx}_${iIdx}`;
+                const badgeClass = item.type === 'S' ? 'badge-s' : (item.type === 'SF' ? 'badge-sf' : 'badge-c');
+                const badgeLabel = item.type === 'S' ? 'Savoir' : (item.type === 'SF' ? 'Savoir-Faire' : 'Compétence');
+
+                html += `<tr>
+                            <td><span class="badge ${badgeClass}">${badgeLabel}</span></td>
+                            <td>${item.desc}</td>
+                            <td class="center"><input type="checkbox" id="${idBase}_p1" onchange="saveState('${idBase}_p1')"></td>
+                            <td class="center"><input type="checkbox" id="${idBase}_p2" onchange="saveState('${idBase}_p2')"></td>
+                            <td class="center"><input type="checkbox" id="${idBase}_p3" onchange="saveState('${idBase}_p3')"></td>
+                         </tr>`;
+            });
+        });
+
+        html += `</tbody></table>`;
+        champCard.innerHTML = html;
+        app.appendChild(champCard);
+    });
+
+    loadState();
+}
+
+function saveState(id) {
+    const el = document.getElementById(id);
+    localStorage.setItem(id, el.checked);
+    updateProgress();
+}
+
+// Nouvelle fonction de sauvegarde pour les métadonnées texte
+function saveMetaValue(id) {
+    const val = document.getElementById(id).value;
+    localStorage.setItem(id, val);
+}
+
+function loadState() {
+    // Restitution des cases à cocher
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(cb => {
+        const val = localStorage.getItem(cb.id);
+        if (val === 'true') cb.checked = true;
+    });
+
+    // Restitution des données textuelles globales
+    const metaIds = ['meta_classe', 'meta_annee', 'meta_prof'];
+    metaIds.forEach(id => {
+        const stored = localStorage.getItem(id);
+        if (stored) document.getElementById(id).value = stored;
+    });
+
+    updateProgress();
+}
+
+function updateProgress() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    let total = checkboxes.length;
+    let checked = 0;
+    
+    checkboxes.forEach(cb => { if (cb.checked) checked++; });
+    
+    const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+    document.getElementById('globalProgress').style.width = pct + '%';
+    document.getElementById('progressText').innerText = pct + '% validé';
+}
+
+function resetData() {
+    if (confirm("Êtes-vous sûr de vouloir réinitialiser toutes les données (cases et informations) ?")) {
+        localStorage.clear();
+        document.getElementById('meta_classe').value = '';
+        document.getElementById('meta_annee').value = '';
+        document.getElementById('meta_prof').value = '';
+        renderApp();
+    }
+}
+
+window.onload = renderApp;
+</script>
+
+</body>
+</html>
